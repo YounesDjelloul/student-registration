@@ -1,14 +1,12 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:latest
+  mongodb:
+    image: mongo:latest
     ports:
-      - "5433:5433"
-    environment:
-      POSTGRES_DB: student-registration
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
 
   app:
     build:
@@ -17,9 +15,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      POSTGRES_DB: student-registration
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_HOST: postgres
+      - DATABASE_URL=mongodb://mongodb:27017
     depends_on:
-      - postgres
+      - mongodb
+
+volumes:
+  mongodb_data:

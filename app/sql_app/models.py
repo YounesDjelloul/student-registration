@@ -1,10 +1,21 @@
-from .database import Base
-from sqlalchemy import Column, Integer, String
+from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import datetime
 
 
-class Item(Base):
-    __tablename__ = "items"
+class StudentApplication(BaseModel):
+    name: str
+    email: str
+    course: str
+    application_date: datetime = Field(default_factory=datetime.utcnow)
+    id: Optional[str] = None
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
+    class Config:
+        allow_population_by_field_name = True
+        schema_extra = {
+            "example": {
+                "name": "John Doe",
+                "email": "john@example.com",
+                "course": "Computer Science"
+            }
+        }
