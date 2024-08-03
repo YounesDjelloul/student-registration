@@ -19,15 +19,15 @@ async def root():
     return "Server is UP"
 
 
-@app.post("/applications/", response_model=StudentApplication)
+@app.post("/applications/")
 async def create_application(application: StudentApplication):
     result = db.applications.insert_one(application.model_dump())
     if not result.inserted_id:
         raise HTTPException(status_code=400, detail="Failed to create application")
-    return {"message": "Application created successfully", "student_id": str(result.inserted_id)}
+    return {"message": "Application created successfully"}
 
 
 @app.get("/applications/")
 async def get_all_applications():
     applications = list(db.applications.find({}, {"_id": 0}))
-    return {"applications": applications}
+    return {"applications": [StudentApplication(**studentApp) for studentApp in applications]}
